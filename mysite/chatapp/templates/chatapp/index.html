@@ -8,35 +8,43 @@
     <title>Document</title>
 </head>
 <body>
+    {% csrf_token %}
+
     <h1>Let's Chat</h1>
 
     <div id="messageBox">
 
     </div>
-    <script>
-        $(document).ready(function(){
-            $.each(messages, function(index, value){
-                $("#messageBox").append("<p> " + index + ": " + value + "</p>");
-            });
-        });
-    </script>
+    {%for message in messages %}
+       <p> {{message.message}}</p>
+    {% endfor %}    
     <div>
-    
-        <input id="message" placeholder="write your message">
-        <button id="send" type="submit" >Send</button>
+        <form id = "target" method="POST">
+            {% csrf_token %}
+            <input id="message" placeholder="write your message">
+            <input id="send" type="button" >
+        </form>
+        
         <script>
-            $("#send").click(function(event) {
-                console.log($("#message").val())
-                $.post('http://127.0.0.1:8000/home/',  
-                    {   
-                        message: $("#message").val() 
-                    }, 
-                function(data, status, xhr) {
-                    console.log("Done man");
-                })
-                .done(function() { alert('Request done!'); })
-                .fail(function(jqxhr, settings, ex) { alert('failed, ' + ex); });
+            const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            $(document).ready(function() {
+        
+               var extra_data = "This is more stuff to send";
+        
+               $('#target').click(function() {
+                  $.ajax({
+                     type: "POST",
+                     url: "http://127.0.0.1:8000/home/",
+                     data: {"message": $("#message").val(), csrfmiddlewaretoken},
+                     success: function(msg) {
+                        console.log("yay");
+                     }
+                  });
+        
+               });
+        
             });
+        
         </script>
     </div>
 
