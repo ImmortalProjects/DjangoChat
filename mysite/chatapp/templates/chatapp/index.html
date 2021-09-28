@@ -4,9 +4,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Document</title>
 </head>
 <body>
-    <p>I did it on my own. Tanay did not help me. Aryan was busy.</p>
+    <h1>Let's Chat</h1>
+
+    <div id="messageBox">
+
+    </div>
+    <script>
+        $(document).ready(function(){
+            $.each(messages, function(index, value){
+                $("#messageBox").append("<p> " + index + ": " + value + "</p>");
+            });
+        });
+    </script>
+    <div>
+    
+        <input id="message" placeholder="write your message">
+        <button id="send" type="submit" >Send</button>
+        <script>
+            $("#send").click(function(event) {
+                console.log($("#message").val())
+                $.post('http://127.0.0.1:8000/home/',  
+                    {   
+                        message: $("#message").val() 
+                    }, 
+                function(data, status, xhr) {
+                    console.log("Done man");
+                })
+                .done(function() { alert('Request done!'); })
+                .fail(function(jqxhr, settings, ex) { alert('failed, ' + ex); });
+            });
+        </script>
+    </div>
+
 </body>
 </html>
