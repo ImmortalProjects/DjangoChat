@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chatapp'
+    'channels',
+    'chatapp',
 ]
 
 
@@ -52,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mysite.urls'
+ASGI_APPLICATION = 'mysite.asgi.application'
 
 TEMPLATES = [
     {
