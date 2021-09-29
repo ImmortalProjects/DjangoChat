@@ -1,9 +1,14 @@
 # chat/consumers.py
 import json
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from chatapp.models import MessageBox
+from awaits.awaitable import awaitable
 
+@awaitable
+def save_message(message):
+    print("hello")
+    MessageBox(message=message).save()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -34,8 +39,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message
             }
         )
-        MessageBox(message=message).save()
+        await save_message(message)
 
+    
     async def chat_message(self, event):
         message = event['message']
         await self.send(text_data=json.dumps({
