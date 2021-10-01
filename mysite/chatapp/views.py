@@ -6,9 +6,10 @@ import json
 
 
 def home(request):
-    if request.method == "POST":
-        m = request.POST.get("message")
-        print(m + "   bye")
-        MessageBox(message=m).save()
-    context = {"messages": MessageBox.objects.all()}
-    return render(request, "chatapp/index.html", context)
+    return render(request, "chatapp/index.html")
+
+
+def room(request, room_name):
+    context = {"messages": MessageBox.objects.all().filter(
+        room_name=room_name), "room_name": room_name}
+    return render(request, 'chatapp/room.html', context)

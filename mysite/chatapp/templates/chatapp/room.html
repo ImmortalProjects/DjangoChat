@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    {% csrf_token %}
+
+    <h1>Let's Chat</h1>
+    {{ room_name|json_script:"room-name" }}
+    <div id="messageBox">
+    {%for message in messages %}
+       <p> {{message.message}}</p>
+    {% endfor %}    
+    </div>
+    <div>   
+        {% csrf_token %}
+        <input id="message" placeholder="write your message">
+        <button id="send" >Submit</button>
+        <!-- <script>
+            const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            $(document).ready(function() {
+               $('#send').click(function() {
+                  $.ajax({
+                     type: "POST",
+                     url: "http://127.0.0.1:8000/",
+                     data: {"message": $("#message").val(), csrfmiddlewaretoken},
+                     success: function(msg) { 
+                        
+                     }
+                  });
+        
+               });
+        
+            });
+        </script> -->
+        <script>
+            const roomName = JSON.parse(document.getElementById('room-name').textContent);
+            console.log(roomName);
+            const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chatapp/'
+            + roomName
+            + '/'
+            );
+            
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                $("#messageBox").append("<p> "+ data.message + "</p>")
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            }; 
+            $('#send').click(function(e) {
+                const message = $('#message').val();
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                
+            });
+            $('#message').val("");
+        </script>
+    </div>
+
+</body>
+</html>

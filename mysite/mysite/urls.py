@@ -20,5 +20,5 @@ from django.urls import path, include
 from chatapp.views import home
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('chatapp.urls'))
+    path('chatapp/', include('chatapp.urls'))
 ]
